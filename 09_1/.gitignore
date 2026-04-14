@@ -1,0 +1,11 @@
+# Скомпилированные программы (c++ … -o Task01 и т.д.)
+Task01
+Task02
+Task03
+Task04
+
+*.o
+a.out
+.DS_Store
+
+b.txt

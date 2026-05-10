@@ -1,101 +1,122 @@
-/*
-Дан циклический двусвязный линейный список и указатель первый
-элемент этого списка. Необходимо удалить в списке все элементы, у которых правый и
-левый сосед совпадают. Если таких элементов нет, то оставить список без изменений.
-Первый и последний элементы считать соседями. В результате вернуть ссылку на
-последний элемент полученного списка.
-Все динамические структуры данных реализовывать через классы. Не использовать STL.  
-Для каждой динамической структуры должен быть предусмотрен стандартный
-набор методов - добавления/удаления/вывода элементов. Во всех задачах обязательно наличие 
-дружественного интерфейса. Ввод данных с клавиатуры.
+/*Р”Р°РЅ С†РёРєР»РёС‡РµСЃРєРёР№ РґРІСѓСЃРІСЏР·РЅС‹Р№ Р»РёРЅРµР№РЅС‹Р№ СЃРїРёСЃРѕРє Рё СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїРµСЂРІС‹Р№
+СЌР»РµРјРµРЅС‚ СЌС‚РѕРіРѕ СЃРїРёСЃРєР°. РќРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ РІ СЃРїРёСЃРєРµ РІСЃРµ СЌР»РµРјРµРЅС‚С‹, Сѓ РєРѕС‚РѕСЂС‹С… РїСЂР°РІС‹Р№ Рё
+Р»РµРІС‹Р№ СЃРѕСЃРµРґ СЃРѕРІРїР°РґР°СЋС‚. Р•СЃР»Рё С‚Р°РєРёС… СЌР»РµРјРµРЅС‚РѕРІ РЅРµС‚, С‚Рѕ РѕСЃС‚Р°РІРёС‚СЊ СЃРїРёСЃРѕРє Р±РµР· РёР·РјРµРЅРµРЅРёР№.
+РџРµСЂРІС‹Р№ Рё РїРѕСЃР»РµРґРЅРёР№ СЌР»РµРјРµРЅС‚С‹ СЃС‡РёС‚Р°С‚СЊ СЃРѕСЃРµРґСЏРјРё. Р’ СЂРµР·СѓР»СЊС‚Р°С‚Рµ РІРµСЂРЅСѓС‚СЊ СЃСЃС‹Р»РєСѓ РЅР°
+РїРѕСЃР»РµРґРЅРёР№ СЌР»РµРјРµРЅС‚ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ СЃРїРёСЃРєР°.
+Р’СЃРµ РґРёРЅР°РјРёС‡РµСЃРєРёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґР°РЅРЅС‹С… СЂРµР°Р»РёР·РѕРІС‹РІР°С‚СЊ С‡РµСЂРµР· РєР»Р°СЃСЃС‹. РќРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ STL.
+Р”Р»СЏ РєР°Р¶РґРѕР№ РґРёРЅР°РјРёС‡РµСЃРєРѕР№ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїСЂРµРґСѓСЃРјРѕС‚СЂРµРЅ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№
+РЅР°Р±РѕСЂ РјРµС‚РѕРґРѕРІ - РґРѕР±Р°РІР»РµРЅРёСЏ/СѓРґР°Р»РµРЅРёСЏ/РІС‹РІРѕРґР° СЌР»РµРјРµРЅС‚РѕРІ. Р’Рѕ РІСЃРµС… Р·Р°РґР°С‡Р°С… РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РЅР°Р»РёС‡РёРµ
+РґСЂСѓР¶РµСЃС‚РІРµРЅРЅРѕРіРѕ РёРЅС‚РµСЂС„РµР№СЃР°. Р’РІРѕРґ РґР°РЅРЅС‹С… СЃ РєР»Р°РІРёР°С‚СѓСЂС‹.
 */
 
+//FIX_ME: РѕС‚СЃСѓС‚СЃС‚РІРѕРІР°Р»Рё #include <iostream> Рё using namespace std вЂ” РєРѕРґ РЅРµ РєРѕРјРїРёР»РёСЂРѕРІР°Р»СЃСЏ
+//(РѕС‚СЃСѓС‚СЃС‚РІРѕРІР°Р» #include <iostream>)
+#include <iostream>
+using namespace std;
+
 class DoubleList {
-    public:
-        struct Node {
-            int data;
-            Node* next;
-            Node* prev;
-            Node(int val) {
-                data = val;
-                next = nullptr;
-                prev = nullptr;
-            }
-            
-        };
-    
-        Node* head;
-    
-        DoubleList() {
-            head = nullptr;
-        }        
-    
-        ~DoubleList() {
-            if (!head)
-                return;
-            Node* curr = head;
-            while (true) {
-                Node* tmp = curr;
-                curr = curr->next;
-                delete tmp;
-                if (curr == head)
-                    break;
-            }
+public:
+    struct Node {
+        int data;
+        Node* next;
+        Node* prev;
+
+        Node(int val) : data(val), next(nullptr), prev(nullptr) {}
+    };
+
+private:
+    //FIX_ME: РїРѕР»Рµ head Р±С‹Р»Рѕ РѕР±СЉСЏРІР»РµРЅРѕ РІ СЃРµРєС†РёРё public вЂ” РїСЂСЏРјРѕР№ РґРѕСЃС‚СѓРї Рє РІРЅСѓС‚СЂРµРЅРЅРµРјСѓ
+    //СѓРєР°Р·Р°С‚РµР»СЋ РЅР°СЂСѓС€Р°РµС‚ РёРЅРєР°РїСЃСѓР»СЏС†РёСЋ; РїРµСЂРµРЅРµСЃРµРЅРѕ РІ private
+    //Node* head;  (Р±С‹Р»Рѕ РІ public)
+    Node* head;
+
+    Node* deleteNode(Node* node) {
+        if (!node) {
+            return nullptr;
         }
-    
-        void push_back(int value) {
-            Node* newNode = new Node(value);
-            if (!head) {
-                head = newNode;
-                newNode->next = newNode;
-                newNode->prev = newNode;
+        if (node->next == node && node->prev == node) {
+            if (node == head) {
+                head = nullptr;
             }
-            else {
-                Node* tail = head->prev;
-                tail->next = newNode;
-                newNode->prev = tail;
-                newNode->next = head;
-                head->prev = newNode;
-            }
-        }
-    
-        void printList() {
-            Node* curr = head;
-            while (true) {
-                cout << curr->data << " ";
-                curr = curr->next;
-                if (curr == head)
-                    break;
-            }
-            cout << endl;
-        }
-    
-        Node* deleteNode(Node* node) {
-            if (!node)
-                return nullptr;
-            if (node->next == node && node->prev == node) {
-                if (node == head)
-                    head = nullptr;
-                delete node;
-                return nullptr;
-            }
-            Node* nextNode = node->next;
-            node->prev->next = node->next;
-            node->next->prev = node->prev;
-            if (node == head)
-                head = nextNode;
             delete node;
-            return nextNode;
+            return nullptr;
         }
-    
+        Node* nextNode = node->next;
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+        if (node == head) {
+            head = nextNode;
+        }
+        delete node;
+        return nextNode;
+    }
+
+public:
+    DoubleList() : head(nullptr) {}
+
+    //FIX_ME: РґРµСЃС‚СЂСѓРєС‚РѕСЂ СЃСЂР°РІРЅРёРІР°Р» curr СЃ СѓР¶Рµ СѓРґР°Р»С‘РЅРЅС‹Рј СѓРєР°Р·Р°С‚РµР»РµРј head вЂ”
+    //РЅРµРѕРїСЂРµРґРµР»С‘РЅРЅРѕРµ РїРѕРІРµРґРµРЅРёРµ; С‚РµРїРµСЂСЊ С†РёРєР» СЂР°Р·СЂС‹РІР°РµС‚СЃСЏ Рё СЃРїРёСЃРѕРє РѕР±С…РѕРґРёС‚СЃСЏ Р»РёРЅРµР№РЅРѕ
+    //~DoubleList() {
+    //    Node* curr = head;
+    //    while (true) { Node* tmp = curr; curr = curr->next; delete tmp;
+    //        if (curr == head) break; }  // head вЂ” dangling pointer РїРѕСЃР»Рµ РїРµСЂРІРѕР№ РёС‚РµСЂР°С†РёРё!
+    //}
+    ~DoubleList() {
+        if (!head) {
+            return;
+        }
+        Node* tail = head->prev;
+        tail->next = nullptr;
+        Node* curr = head;
+        while (curr != nullptr) {
+            Node* tmp = curr;
+            curr = curr->next;
+            delete tmp;
+        }
+    }
+
+    void push_back(int value) {
+        Node* newNode = new Node(value);
+        if (!head) {
+            head = newNode;
+            newNode->next = newNode;
+            newNode->prev = newNode;
+        } else {
+            Node* tail = head->prev;
+            tail->next = newNode;
+            newNode->prev = tail;
+            newNode->next = head;
+            head->prev = newNode;
+        }
+    }
+
+    //FIX_ME: printList() РЅРµ РїСЂРѕРІРµСЂСЏР»Р° РїСѓСЃС‚РѕР№ СЃРїРёСЃРѕРє вЂ” РІС‹Р·РѕРІ РІС‘Р» Рє СЂР°Р·С‹РјРµРЅРѕРІР°РЅРёСЋ nullptr
+    //void printList() { Node* curr = head; while (true) { cout << curr->data ... } }
+    void printList() const {
+        if (!head) {
+            cout << "(РїСѓСЃС‚РѕР№ СЃРїРёСЃРѕРє)" << endl;
+            return;
+        }
+        Node* curr = head;
+        do {
+            cout << curr->data << " ";
+            curr = curr->next;
+        } while (curr != head);
+        cout << endl;
+    }
+
     Node* removeSides() {
-        if (!head) return nullptr;
+        if (!head) {
+            return nullptr;
+        }
         bool anyDeletion = false;
-        bool deletedSomething = false;
+        //FIX_ME: РїРµСЂРµРјРµРЅРЅР°СЏ deletedSomething РѕР±СЉСЏРІР»СЏР»Р°СЃСЊ, РЅРѕ РЅРёРіРґРµ РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°Р»Р°СЃСЊ
+        //bool deletedSomething = false;
         while (true) {
             anyDeletion = false;
-            if (!head || head->next == head)
+            if (!head || head->next == head) {
                 break;
+            }
             Node* start = head;
             Node* curr = head;
             bool completedCycle = false;
@@ -104,47 +125,56 @@ class DoubleList {
                 int rightData = curr->next->data;
                 if (leftData == rightData) {
                     anyDeletion = true;
-                    deletedSomething = true;
-                    Node* nextNode = curr->next;
-                    if (curr == head)
-                        head = nextNode;
                     curr = deleteNode(curr);
-                    if (!curr)
+                    if (!curr) {
                         return nullptr;
+                    }
                     start = head;
                     continue;
-                }
-                else {
+                } else {
                     curr = curr->next;
                 }
-                if (curr == start)
+                if (curr == start) {
                     completedCycle = true;
+                }
             }
-            if (!anyDeletion)
+            if (!anyDeletion) {
                 break;
+            }
         }
-        if (!head)
+        if (!head) {
             return nullptr;
-        Node* tail = head->prev;
-        return tail;
+        }
+        return head->prev;
     }
-};    
-    
+};
 
-int main(){
+int main() {
     DoubleList list;
     int n, value;
-    cout << "сколько надо числе: ";
+    cout << "Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‡РёСЃРµР»: ";
     cin >> n;
-    cout << "вводи числа" << endl;
+    cout << "Р’РІРµРґРёС‚Рµ С‡РёСЃР»Р°:" << endl;
     for (int i = 0; i < n; i++) {
         cin >> value;
         list.push_back(value);
     }
-    cout << "нормальный список: ";
+    cout << "РСЃС…РѕРґРЅС‹Р№ СЃРїРёСЃРѕРє: ";
     list.printList();
+
     DoubleList::Node* tail = list.removeSides();
-    cout << "обработанный список: ";
+
+    cout << "РћР±СЂР°Р±РѕС‚Р°РЅРЅС‹Р№ СЃРїРёСЃРѕРє: ";
     list.printList();
-    cout << "последний элемент: " << tail->data << endl;
+
+    //FIX_ME: tail РЅРµ РїСЂРѕРІРµСЂСЏР»СЃСЏ РЅР° nullptr РїРµСЂРµРґ СЂР°Р·С‹РјРµРЅРѕРІР°РЅРёРµРј вЂ” crash РїСЂРё РїСѓСЃС‚РѕРј
+    //СЂРµР·СѓР»СЊС‚Р°С‚Рµ; РґРѕР±Р°РІР»РµРЅР° РїСЂРѕРІРµСЂРєР°
+    //cout << "РїРѕСЃР»РµРґРЅРёР№ СЌР»РµРјРµРЅС‚: " << tail->data << endl;
+    if (tail) {
+        cout << "РџРѕСЃР»РµРґРЅРёР№ СЌР»РµРјРµРЅС‚: " << tail->data << endl;
+    } else {
+        cout << "РЎРїРёСЃРѕРє РїСѓСЃС‚ РїРѕСЃР»Рµ РѕР±СЂР°Р±РѕС‚РєРё." << endl;
+    }
+
+    return 0;
 }

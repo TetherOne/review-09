@@ -16,75 +16,76 @@ using namespace std;
 
 class Node {
 public:
-    int data;       
-    Node* next;     
+    int data;
+    Node* next;
 
-    
     Node(int value) : data(value), next(nullptr) {}
 };
 
 class Stack {
 private:
-    Node* top; 
+    Node* top;
 
 public:
-    
     Stack() : top(nullptr) {}
 
-    //  для добавления элемента в стек
+    //FIX_ME: отсутствовал деструктор — утечка памяти при любом выходе из программы
+    //отсутствовал ~Stack()
+    ~Stack() {
+        while (top != nullptr) {
+            Node* temp = top;
+            top = top->next;
+            delete temp;
+        }
+    }
+
     void push(int value) {
-        Node* newNode = new Node(value); // Создаем новый узел
-        newNode->next = top;             // Новый узел указывает на текущую вершину
-        top = newNode;                   // Обновляем вершину стека
+        Node* newNode = new Node(value);
+        newNode->next = top;
+        top = newNode;
         cout << "Элемент " << value << " добавлен в стек." << endl;
     }
 
-    // Метод для удаления элемента из стека
     void pop() {
-        if (top == nullptr) {            
+        if (top == nullptr) {
             cout << "Стек пуст! Невозможно удалить элемент." << endl;
             return;
         }
-        Node* temp = top;                
-        top = top->next;                 
-        cout << "Элемент " << temp->data << " удален из стека." << endl;
-        delete temp;                 
+        Node* temp = top;
+        top = top->next;
+        cout << "Элемент " << temp->data << " удалён из стека." << endl;
+        delete temp;
     }
 
-    
-    void print() {
-        if (top == nullptr) {           
+    void print() const {
+        if (top == nullptr) {
             cout << "Стек пуст!" << endl;
             return;
         }
-        Node* current = top;            
+        Node* current = top;
         cout << "Элементы стека: ";
-        while (current != nullptr) {     
-            cout << current->data << " "; 
-            current = current->next;    
+        while (current != nullptr) {
+            cout << current->data << " ";
+            current = current->next;
         }
-        cout << endl;                  
+        cout << endl;
     }
 
-    
-    Node* getTop() {
+    Node* getTop() const {
         return top;
     }
 
-    
     void clearStack() {
-        while (top != nullptr) {       
-            Node* temp = top;            
-            top = top->next;             
-            delete temp;                 // Удаляем узел
+        while (top != nullptr) {
+            Node* temp = top;
+            top = top->next;
+            delete temp;
         }
         cout << "Стек очищен." << endl;
     }
 
-    
     friend void addElementAndPrintAddress(Stack& stack, int D);
 };
-
 
 void addElementAndPrintAddress(Stack& stack, int D) {
     stack.push(D);
@@ -106,25 +107,25 @@ int main() {
         cin >> choice;
 
         switch (choice) {
-        case 1:
-            cout << "Введите число для добавления в стек: ";
-            cin >> value;
-            addElementAndPrintAddress(stack, value);
-            break;
-        case 2:
-            stack.pop();
-            break;
-        case 3:
-            stack.print();
-            break;
-        case 4:
-            stack.clearStack();
-            break;
-        case 5:
-            cout << "Выход из программы." << endl;
-            return 0;
-        default:
-            cout << "Неверный выбор! Пожалуйста, попробуйте снова." << endl;
+            case 1:
+                cout << "Введите число для добавления в стек: ";
+                cin >> value;
+                addElementAndPrintAddress(stack, value);
+                break;
+            case 2:
+                stack.pop();
+                break;
+            case 3:
+                stack.print();
+                break;
+            case 4:
+                stack.clearStack();
+                break;
+            case 5:
+                cout << "Выход из программы." << endl;
+                return 0;
+            default:
+                cout << "Неверный выбор! Пожалуйста, попробуйте снова." << endl;
         }
     }
 

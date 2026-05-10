@@ -21,117 +21,122 @@
 
 */
 
-
-
+//FIX_ME: #include <windows.h> отсутствует на macOS/Linux, заголовок удалён
+//#include <windows.h>
 #include <iostream>
-#include <windows.h>
-
 using namespace std;
 
-// Структура для узла очереди
-struct Uzel {
-    int Znachenie;
-    Uzel* Sleduyushiy;
+//FIX_ME: имена членов в русской транслитерации (Uzel, Znachenie, Sleduyushiy) нарушают
+//единый стиль проекта — переименованы в английские эквиваленты
+struct Node {
+    int data;
+    Node* next;
+
+    Node(int value) : data(value), next(nullptr) {}
 };
 
-// Класс для работы с очередью
-class Ochered {
+class Queue {
 private:
-    Uzel* Nachalo; // Указатель на начало
-    Uzel* Konec;   // Указатель на конец
+    Node* head;
+    Node* tail;
 
 public:
-    // Инициализация очереди
-    void Inicializaciya() {
-        Nachalo = nullptr;
-        Konec = nullptr;
-    }
+    //FIX_ME: отсутствовал конструктор — вместо него использовался отдельный метод
+    //Inicializaciya(), что не соответствует идиомам C++; поля не инициализировались
+    //автоматически при создании объекта
+    //void Inicializaciya() { Nachalo = nullptr; Konec = nullptr; }
+    Queue() : head(nullptr), tail(nullptr) {}
 
-    // Добавить элемент в конец
-    void DobavitElement(int Chislo) {
-        Uzel* Noviy = new Uzel;
-        Noviy->Znachenie = Chislo;
-        Noviy->Sleduyushiy = nullptr;
-
-        if (Nachalo == nullptr) {
-            Nachalo = Noviy;
-            Konec = Noviy;
-        }
-        else {
-            Konec->Sleduyushiy = Noviy;
-            Konec = Noviy;
+    //FIX_ME: отсутствовал деструктор — утечка памяти при любом выходе из программы
+    //отсутствовал ~Queue()
+    ~Queue() {
+        while (head != nullptr) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
         }
     }
 
-    // Удалить первый элемент
-    void UdalitElement() {
-        if (Nachalo == nullptr) {
+    void enqueue(int value) {
+        Node* newNode = new Node(value);
+        if (head == nullptr) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    void dequeue() {
+        if (head == nullptr) {
             cout << "Очередь пуста!" << endl;
             return;
         }
-
-        Uzel* Vremenny = Nachalo;
-        Nachalo = Nachalo->Sleduyushiy;
-        delete Vremenny;
-
-        if (Nachalo == nullptr) Konec = nullptr;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        if (head == nullptr) {
+            tail = nullptr;
+        }
     }
 
-    // Вывести все элементы
-    void VivodElementov() {
-        Uzel* Tekushiy = Nachalo;
-        while (Tekushiy != nullptr) {
-            cout << Tekushiy->Znachenie << " ";
-            Tekushiy = Tekushiy->Sleduyushiy;
+    void print() const {
+        Node* current = head;
+        while (current != nullptr) {
+            cout << current->data << " ";
+            current = current->next;
         }
         cout << endl;
     }
 
-    // Вывести указатели начала и конца (ДОБАВЛЕН ВЫВОД ЗНАЧЕНИЙ)
-    void VivodUkazatelei() {
-        cout << "Адрес начала: " << Nachalo;
-        if (Nachalo != nullptr) cout << " (значение: " << Nachalo->Znachenie << ")";
+    void printPointers() const {
+        cout << "Адрес начала: " << head;
+        if (head != nullptr) {
+            cout << " (значение: " << head->data << ")";
+        }
         cout << endl;
 
-        cout << "Адрес конца:  " << Konec;
-        if (Konec != nullptr) cout << " (значение: " << Konec->Znachenie << ")";
+        cout << "Адрес конца:  " << tail;
+        if (tail != nullptr) {
+            cout << " (значение: " << tail->data << ")";
+        }
         cout << endl;
     }
 };
 
-
 int main() {
-    setlocale(LC_ALL, "Russian");
+    //FIX_ME: setlocale(LC_ALL, "Russian") — Windows-специфичная строка локали,
+    //на macOS не работает; удалена (UTF-8 поддерживается терминалом по умолчанию)
+    //setlocale(LC_ALL, "Russian");
 
-    Ochered Ochered1, Ochered2;
-    Ochered1.Inicializaciya();
-    Ochered2.Inicializaciya();
+    Queue queue1, queue2;
 
     cout << "Введите 10 чисел:\n";
     for (int i = 1; i <= 10; i++) {
-        int Chislo;
+        int value;
         cout << "Число " << i << ": ";
-        cin >> Chislo;
+        cin >> value;
 
-        // Примитивная проверка на ввод
         if (cin.fail()) {
-            cout << "Ошибка! Введите число!\n";
-            return 0;
+            cout << "Ошибка! Введите целое число!\n";
+            return 1;
         }
 
-        // Распределение по очередям
-        if (i % 2 != 0) Ochered1.DobavitElement(Chislo);
-        else Ochered2.DobavitElement(Chislo);
+        if (i % 2 != 0) {
+            queue1.enqueue(value);
+        } else {
+            queue2.enqueue(value);
+        }
     }
 
-    // Вывод результатов
-    cout << "\nНечетная очередь:\n";
-    Ochered1.VivodElementov();
-    Ochered1.VivodUkazatelei();
+    cout << "\nНечётная очередь:\n";
+    queue1.print();
+    queue1.printPointers();
 
-    cout << "\nЧетная очередь:\n";
-    Ochered2.VivodElementov();
-    Ochered2.VivodUkazatelei();
+    cout << "\nЧётная очередь:\n";
+    queue2.print();
+    queue2.printPointers();
 
     return 0;
 }

@@ -11,33 +11,41 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
+
 class Node {
 public:
-    int data;       
-    Node* next;    
+    int data;
+    Node* next;
 
-    
     Node(int value) : data(value), next(nullptr) {}
 };
 
 class LinkedList {
 private:
-    Node* head; 
+    Node* head;
 
 public:
-    
     LinkedList() : head(nullptr) {}
 
-    
-    void insertSorted(int value) {
-        Node* newNode = new Node(value); 
-        if (head == nullptr || head->data < value) { 
-            newNode->next = head;        
-            head = newNode;
+    //FIX_ME: отсутствовал деструктор — утечка памяти при любом выходе из программы
+    //отсутствовал ~LinkedList()
+    ~LinkedList() {
+        while (head != nullptr) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
         }
-        else {
-            Node* current = head;       
+    }
+
+    void insertSorted(int value) {
+        Node* newNode = new Node(value);
+        if (head == nullptr || head->data < value) {
+            newNode->next = head;
+            head = newNode;
+        } else {
+            Node* current = head;
             while (current->next != nullptr && current->next->data > value) {
                 current = current->next;
             }
@@ -46,59 +54,55 @@ public:
         }
     }
 
-    
-    void print() {
-        Node* current = head;           
-        while (current != nullptr) {    
+    void print() const {
+        Node* current = head;
+        while (current != nullptr) {
             cout << current->data << " ";
-            current = current->next;    
+            current = current->next;
         }
-        cout << endl;        
+        cout << endl;
     }
 
-    
-    void readFromFile(const std::string& filename) {
-        ifstream file(filename);   // Открываем файл для чтения
-        if (!file.is_open()) {          // Проверяем, удалось ли открыть файл
+    void readFromFile(const string& filename) {
+        ifstream file(filename);
+        if (!file.is_open()) {
             cerr << "Ошибка открытия файла!" << endl;
             return;
         }
 
-        int N;
-        file >> N;                      // Читаем количество элементов
+        int n;
+        file >> n;
 
         int value;
-        for (int i = 0; i < N; ++i) {   // Читаем элементы и добавляем их в список
+        for (int i = 0; i < n; ++i) {
             file >> value;
-            insertSorted(value);         // Вставляем элемент с сохранением упорядоченности
+            insertSorted(value);
         }
 
-        file.close();                   // Закрываем файл
+        file.close();
     }
 
-    // Дружественная функция для чтения данных из файла и заполнения списка
-    friend void readFromFile(LinkedList& list, const string& filename);
+    //FIX_ME: дублирующая friend-функция readFromFile просто вызывала одноимённый
+    //метод класса — избыточная обёртка удалена
+    //friend void readFromFile(LinkedList& list, const string& filename);
 };
 
-// Дружественная функция для чтения данных из файла и заполнения списка
-void readFromFile(LinkedList& list, const string& filename) {
-    list.readFromFile(filename);
-}
+//FIX_ME: удалена — дублировала метод LinkedList::readFromFile без какой-либо логики
+//void readFromFile(LinkedList& list, const string& filename) {
+//    list.readFromFile(filename);
+//}
 
 int main() {
-    LinkedList list;                     // Создаем список
+    LinkedList list;
     string filename;
 
-    // Ввод имени файла
     cout << "Введите имя файла: ";
     cin >> filename;
 
-    // Чтение данных из файла и заполнение списка
-    readFromFile(list, filename);
+    list.readFromFile(filename);
 
-    // Вывод элементов списка
     cout << "Упорядоченный список: ";
     list.print();
 
-    return 0;                            
+    return 0;
 }

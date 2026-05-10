@@ -1,0 +1,10 @@
+Result: 26
+
+Prefix:
++ x * + x 2 3 
+
+Postfix:
+x x 2 + 3 * + 
+
+Infix:
+(x+((x+2)*3))
